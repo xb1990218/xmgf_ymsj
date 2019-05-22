@@ -79,5 +79,40 @@ namespace WebApp.Controllers
             List<InfoShow> list=comSice.GetInfoShow(page, limit, u,bedate, out int totalCount);
             return Json(new { code=0, msg="", count= totalCount, data=list });
         }
+
+        //修改密码页面
+        public IActionResult Password()
+        {
+            return View();
+        }
+
+        public JsonResult UpdatePassword(string oldpassword,string newpassword)
+        {
+            int? id = HttpContext.Session.GetInt32("userId");
+            User u = null;
+            if (!cache.TryGetValue<User>($"userid_{id}", out u))
+            {
+                u = userSice.GetEntity(a => a.Id == id);
+                //设置到缓存中 过期时间一小时
+                cache.Set<User>($"userid_{u.Id}", u, DateTimeOffset.Now.AddHours(1));
+            }
+            //判断原密码是否正确
+            if (u.Pasword!=oldpassword)
+            {
+                return Json(new BoolResult { Result=false,Msg="原密码错误！"});
+            }
+            //更新密码
+            u.Pasword = newpassword;
+            bool b=userSice.Edit(u);
+            if (b)
+            {
+                HttpContext.Session.Remove("userId");
+                return Json(new BoolResult { Result = true, Msg = "密码更新成功！" });
+            }
+            else
+            {
+                return Json(new BoolResult { Result = false, Msg = "网络异常，请重试！" });
+            }
+        }
     }
 }
