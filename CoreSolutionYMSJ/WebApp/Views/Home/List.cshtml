@@ -1,0 +1,105 @@
+﻿@using Entities.Models;
+@{
+    Layout = null;
+    User user = ViewBag.user as User;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>信息查询</title>
+    <link href="/lib/layui/css/layui.css" rel="stylesheet" />
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/lib/layui/layui.js"></script>
+    <style>
+        .layui-table, .layui-table-view{
+            margin:2px 0;
+        }
+        .toprow{
+            margin-top:2px;
+        }
+        .dateinputdiv{
+            width:295px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            layui.use(['table','laydate','layer'], function () {
+                var table = layui.table;
+                var laydate = layui.laydate;
+                var layer = layui.layer;
+
+                //日期段
+                laydate.render({
+                    elem: "#searchDate",
+                    type: "datetime",
+                    range:true
+                });
+                //初始化数据表格
+                var infotable=table.render({
+                    elem: '#infoShowTable'
+                    , height: '570'
+                    , url: '/Home/GetData?id='+@user.Id //数据接口
+                    , page: true //开启分页
+                    , limit: 10 //每页显示多少条
+                    , cellMinWidth: 50 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    , cols: [[ //表头
+                        { field: 'id', width: 65, title: 'ID', sort: true }
+                        , {
+                            field: 'addTime', title: '日期', width:160, templet: function (d) {
+                                return layui.util.toDateString(d.addTime, "yyyy-MM-dd HH:mm:ss");
+                            }
+                        }
+                        , { field: 'accountName',width:90, title: '账户名称' }
+                        , { field: 'account', title: '后台用户登录的账号做外键用的', hide: true }
+                        , { field: 'quDao', title: '渠道' }
+                        , { field: 'tGid', title: '推广ID' }
+                        , { field: 'houz', title: '后缀' }
+                        , { field: 'userName', title: '用户名' }
+                        , { field: 'mobile', title: '手机号' }
+                        , { field: 'wx', title: '微信号' }
+                        , { field: 'system', title: '系统' }
+                        , { field: 'ip', title: 'IP地址' }
+
+                    ]]
+                });
+
+                $("#btnSearch").on("click", function () {
+                    var datetime = $("#searchDate").val();
+                    if (datetime!=""&&datetime.length!=41) {
+                        layer.msg("时间段格式不对，请重新选择", { icon: 2 });
+                        return;
+                    }
+                    //表格重载
+                    infotable.reload({
+                        url: "/Home/GetData?id="+@user.Id,
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , where: {
+                            bedate: datetime
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="layui-row toprow">
+        <div class="layui-col-md11">
+            <div class="layui-inline">
+                <label class="layui-form-label">起始日期</label>
+                <div class="layui-input-inline dateinputdiv">
+                    <input type="text" class="layui-input" id="searchDate" placeholder=" - ">
+                </div>
+            </div>
+            <button class="layui-btn" id="btnSearch"><i class="layui-icon layui-icon-search"></i></button>
+        </div>
+        <div class="layui-col-md1"></div>
+    </div>
+    <table id="infoShowTable" lay-filter="test"></table>
+</body>
+</html>
