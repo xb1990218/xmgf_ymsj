@@ -29,6 +29,22 @@ namespace Services.Service
                 //判断用户是否为管理员，管理员直接连表查出所有数据，普通用户只连表查出他自己的数据
                 if (u.IsAdmin == 1)//管理员
                 {
+                    totalCount = db.User.Join(db.UserInfo, user => user.UserName, fo => fo.Account, (user, fo) => new InfoShow
+                    {
+                        Id = fo.Id,
+                        AddTime = fo.AddTime,
+                        AccountName = user.Name,
+                        Account = user.UserName,
+                        QuDao = fo.QuDao,
+                        TGid = fo.TGid,
+                        Houz = fo.Houz,
+                        UserName = fo.UserName,
+                        Mobile = fo.Mobile,
+                        Wx = fo.Wx,
+                        System = fo.System,
+                        Ip = fo.Ip
+                    }).OrderByDescending(a => a.AddTime).Where(a => a.AddTime >= bgDate && a.AddTime <= edDate).Count();
+
                     list = db.User.Join(db.UserInfo, user => user.UserName, fo => fo.Account, (user, fo) => new InfoShow
                     {
                         Id = fo.Id,
@@ -44,11 +60,25 @@ namespace Services.Service
                         System = fo.System,
                         Ip = fo.Ip
                     }).OrderByDescending(a => a.AddTime).Where(a=>a.AddTime>=bgDate&&a.AddTime<=edDate).Skip((page - 1) * limit).Take(limit).ToList();
-
-                    totalCount = list.Count;
                 }
                 else//普通账号
                 {
+                    totalCount = db.User.Where(a => a.Id == u.Id).Join(db.UserInfo, user => user.UserName, fo => fo.Account, (user, fo) => new InfoShow
+                    {
+                        Id = fo.Id,
+                        AddTime = fo.AddTime,
+                        AccountName = user.Name,
+                        Account = user.UserName,
+                        QuDao = fo.QuDao,
+                        TGid = fo.TGid,
+                        Houz = fo.Houz,
+                        UserName = fo.UserName,
+                        Mobile = fo.Mobile,
+                        Wx = fo.Wx,
+                        System = fo.System,
+                        Ip = fo.Ip
+                    }).OrderByDescending(a => a.AddTime).Where(a => a.AddTime >= bgDate && a.AddTime <= edDate).Count();
+
                     list = db.User.Where(a => a.Id == u.Id).Join(db.UserInfo, user => user.UserName, fo => fo.Account, (user, fo) => new InfoShow
                     {
                         Id = fo.Id,
@@ -64,8 +94,6 @@ namespace Services.Service
                         System = fo.System,
                         Ip = fo.Ip
                     }).OrderByDescending(a => a.AddTime).Where(a => a.AddTime >= bgDate && a.AddTime <= edDate).Skip((page - 1) * limit).Take(limit).ToList();
-
-                    totalCount = list.Count;
                 }
             }
             else//过滤日期为空 则不过滤
@@ -73,6 +101,22 @@ namespace Services.Service
                 //判断用户是否为管理员，管理员直接连表查出所有数据，普通用户只连表查出他自己的数据
                 if (u.IsAdmin == 1)//管理员
                 {
+                    totalCount = db.User.Join(db.UserInfo, user => user.UserName, fo => fo.Account, (user, fo) => new InfoShow
+                    {
+                        Id = fo.Id,
+                        AddTime = fo.AddTime,
+                        AccountName = user.Name,
+                        Account = user.UserName,
+                        QuDao = fo.QuDao,
+                        TGid = fo.TGid,
+                        Houz = fo.Houz,
+                        UserName = fo.UserName,
+                        Mobile = fo.Mobile,
+                        Wx = fo.Wx,
+                        System = fo.System,
+                        Ip = fo.Ip
+                    }).Count();
+
                     list = db.User.Join(db.UserInfo, user => user.UserName, fo => fo.Account, (user, fo) => new InfoShow
                     {
                         Id = fo.Id,
@@ -88,11 +132,25 @@ namespace Services.Service
                         System = fo.System,
                         Ip = fo.Ip
                     }).OrderByDescending(a => a.AddTime).Skip((page - 1) * limit).Take(limit).ToList();
-
-                    totalCount = list.Count;
                 }
                 else//普通账号
                 {
+                    totalCount = db.User.Where(a => a.Id == u.Id).Join(db.UserInfo, user => user.UserName, fo => fo.Account, (user, fo) => new InfoShow
+                    {
+                        Id = fo.Id,
+                        AddTime = fo.AddTime,
+                        AccountName = user.Name,
+                        Account = user.UserName,
+                        QuDao = fo.QuDao,
+                        TGid = fo.TGid,
+                        Houz = fo.Houz,
+                        UserName = fo.UserName,
+                        Mobile = fo.Mobile,
+                        Wx = fo.Wx,
+                        System = fo.System,
+                        Ip = fo.Ip
+                    }).Count();
+
                     list = db.User.Where(a => a.Id == u.Id).Join(db.UserInfo, user => user.UserName, fo => fo.Account, (user, fo) => new InfoShow
                     {
                         Id = fo.Id,
@@ -108,8 +166,6 @@ namespace Services.Service
                         System = fo.System,
                         Ip = fo.Ip
                     }).OrderByDescending(a => a.AddTime).Skip((page - 1) * limit).Take(limit).ToList();
-
-                    totalCount = list.Count;
                 }
             }
 

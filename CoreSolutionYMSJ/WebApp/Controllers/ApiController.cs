@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,15 @@ namespace WebApp.Controllers
             if (username == "" && mobile == "" && wx == "" && system == "" && ip == "")
             {
                 return Json(new BoolResult { Result = false, Msg = "用户信息不能都为空" });
+            }
+            qudao = HttpUtility.UrlDecode(qudao);
+            if (username != "")
+            {
+                username = HttpUtility.UrlDecode(username);
+            }
+            if (ip != "")
+            {
+                ip = HttpUtility.UrlDecode(ip);
             }
             UserInfo ufo = new UserInfo();
             ufo.Account = account;

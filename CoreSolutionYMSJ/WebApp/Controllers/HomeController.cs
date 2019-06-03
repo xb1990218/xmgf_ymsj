@@ -86,6 +86,12 @@ namespace WebApp.Controllers
             return View();
         }
 
+        //用户列表
+        public IActionResult UserList()
+        {
+            return View();
+        }
+
         public JsonResult UpdatePassword(string oldpassword,string newpassword)
         {
             int? id = HttpContext.Session.GetInt32("userId");

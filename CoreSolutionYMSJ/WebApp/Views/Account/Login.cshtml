@@ -77,6 +77,10 @@
         }
     </style>
     <script type="text/javascript">
+        if (window.parent != this.window) {//如果存在父窗口,则刷新父窗口，否则会出现后台窗口嵌套登录窗口的情况
+            //window.parent.location.href = "/Account/Login"; //这种方式也可以  父窗口跳转到登录
+            parent.location.reload();//刷新 其实也就是跳转到登录了，因为session失效
+        }
         $(function () {
             layui.use('layer', function () {
                 var layer = layui.layer;

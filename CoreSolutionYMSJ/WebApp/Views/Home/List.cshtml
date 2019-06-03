@@ -40,10 +40,11 @@
                 //初始化数据表格
                 var infotable=table.render({
                     elem: '#infoShowTable'
-                    , height: '570'
+                    , height: '582'
                     , url: '/Home/GetData?id='+@user.Id //数据接口
                     , page: true //开启分页
-                    , limit: 10 //每页显示多少条
+                    , limit: 20 //每页显示多少条
+                    ,size: 'sm'
                     , cellMinWidth: 50 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                     , cols: [[ //表头
                         { field: 'id', width: 65, title: 'ID', sort: true }
@@ -59,8 +60,13 @@
                         , { field: 'houz', title: '后缀' }
                         , { field: 'userName', title: '用户名' }
                         , { field: 'mobile', title: '手机号' }
-                        , { field: 'wx', title: '微信号' }
-                        , { field: 'system', title: '系统' }
+                        @{
+                            if (user.IsAdmin==1)
+                            {
+                                <text>, { field: 'wx', title: '微信号' }
+                        , { field: 'system', title: '系统' }</text>
+                            }
+                        }
                         , { field: 'ip', title: 'IP地址' }
 
                     ]]
@@ -83,13 +89,34 @@
                         }
                     });
                 });
+
+                $("#btnExport").on("click", function () {
+                    var datetime = $("#searchDate").val();
+                    if (datetime!=""&&datetime.length!=41) {
+                        datetime = "";
+                    }
+                    $.ajax({
+                        url: "/Home/GetData?id=" +@user.Id,
+                        type: "post",
+                        datatype: "json",
+                        data: { page: 1, limit: 10000000, bedate: datetime },
+                        success: function (data) {
+                            if (data.code == 0) {
+                                table.exportFile(infotable.config.id, data.data,"xls");
+                            }
+                            else {
+                                layer.msg("导出失败！");
+                            }
+                        }
+                    });
+                });
             });
         });
     </script>
 </head>
 <body>
     <div class="layui-row toprow">
-        <div class="layui-col-md11">
+        <div class="layui-col-md10">
             <div class="layui-inline">
                 <label class="layui-form-label">起始日期</label>
                 <div class="layui-input-inline dateinputdiv">
@@ -98,7 +125,7 @@
             </div>
             <button class="layui-btn" id="btnSearch"><i class="layui-icon layui-icon-search"></i></button>
         </div>
-        <div class="layui-col-md1"></div>
+        <div class="layui-col-md2"><button class="layui-btn layui-btn-radius layui-layout-right" id="btnExport">导出</button></div>
     </div>
     <table id="infoShowTable" lay-filter="test"></table>
 </body>

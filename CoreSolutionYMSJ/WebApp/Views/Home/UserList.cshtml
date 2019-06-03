@@ -1,0 +1,42 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>用户列表</title>
+    <link href="~/lib/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/js/jquery-3.4.1.min.js"></script>
+    <script src="~/lib/layui/layui.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            layui.use(["table"], function () {
+                var table = layui.table;
+
+                table.render({
+                    elem: "#tbUserlist",
+                    url: "/Home/GetUserList",
+                    height: "582",
+                    page: true,
+                    limit: 10,
+                    cols: [[
+                        { field: 'id', width: 65, title: 'ID', sort: true },
+                        { field: 'userName', title: '用户名'},
+                        { field: 'name', title: '名字'},
+                        { field: 'isAdmin', title: '是否管理员'},
+                        { field: 'isLock', title: '是否锁定'}
+                    ]]
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <table id="tbUserlist"></table>
+</body>
+</html>
