@@ -47,7 +47,8 @@
                     ,size: 'sm'
                     , cellMinWidth: 50 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                     , cols: [[ //表头
-                        { field: 'id', width: 65, title: 'ID', sort: true }
+                        { field: 'id', width: 65, title: 'ID', sort: true, hide: true }
+                        , { field: 'xuhao',width:90, title: '序号',type:'numbers',fixed:'left' }
                         , {
                             field: 'addTime', title: '日期', width:160, templet: function (d) {
                                 return layui.util.toDateString(d.addTime, "yyyy-MM-dd HH:mm:ss");
