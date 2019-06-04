@@ -51,6 +51,15 @@ namespace WebApp.Controllers
             {
                 return Json(new BoolResult { Result = false, Msg = "用户信息不能都为空" });
             }
+            //为了防止提交重复数据，一个手机在一个用户下只插入一次
+            if (!string.IsNullOrWhiteSpace(mobile))
+            {
+                UserInfo uf=userInfoSice.GetEntity(a => a.Mobile == mobile && a.Account==account);
+                if (uf!=null)
+                {
+                    return Json(new BoolResult { Result = false, Msg = "一个电话只能提交一次" });
+                }
+            }
             qudao = HttpUtility.UrlDecode(qudao);
             if (username != "")
             {
