@@ -5,6 +5,7 @@ using Services.IService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Services.Service
@@ -169,6 +170,23 @@ namespace Services.Service
                 }
             }
 
+            return list;
+        }
+
+        //获取渠道商分页信息
+        public List<BusineShow> GetBusInfoShow(int page, int limit, User u,string bedate, out int totalCount)
+        {
+            Expression<Func<UserInfo, bool>> wherelambda = a => a.Account == u.UserName;
+            if (!string.IsNullOrWhiteSpace(bedate))
+            {
+                var arryDate = bedate.Split(" - ");
+                DateTime bgDate = Convert.ToDateTime(arryDate[0]);//开始日期
+                DateTime edDate = Convert.ToDateTime(arryDate[1]);//结束日期
+                wherelambda = a => a.Account == u.UserName && a.AddTime >= bgDate && a.AddTime <= edDate;
+            } 
+            var temp=db.UserInfo.Where(wherelambda).GroupBy(a =>new { a.QuDao,a.Houz}).Select(a => new BusineShow { QuDao=a.Key.QuDao,Houz = a.Key.Houz, Count = a.Count() });
+            totalCount = temp.Count();
+            List<BusineShow> list =temp.Skip((page - 1) * limit).Take(limit).ToList();
             return list;
         }
     }

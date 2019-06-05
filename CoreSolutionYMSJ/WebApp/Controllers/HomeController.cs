@@ -80,6 +80,31 @@ namespace WebApp.Controllers
             return Json(new { code=0, msg="", count= totalCount, data=list });
         }
 
+        //渠道商账号汇总查询页面分页获取数据的方法
+        public JsonResult GetBusinessData(int page, int limit, string bedate)
+        {
+            //获取当前登录用户
+            int? id = HttpContext.Session.GetInt32("userId");
+            User u = null;
+            if (!cache.TryGetValue<User>($"userid_{id}", out u))
+            {
+                u = userSice.GetEntity(a => a.Id == id);
+                //设置到缓存中 过期时间一小时
+                cache.Set<User>($"userid_{u.Id}", u, DateTimeOffset.Now.AddHours(1));
+            }
+            //获取该渠道商下面的客户用户(约定一个客户账号只有一个渠道商账号 一对一关系)
+            User nUser = userSice.GetEntity(a => a.ParentId == u.Id);
+            //对该nUser账号对应的UserInfo表信息按照后缀分组得总数 再分页
+            List<BusineShow> list= comSice.GetBusInfoShow(page, limit, nUser,bedate, out int totalCount);
+            return Json(new { code = 0, msg = "", count = totalCount, data = list });
+        }
+
+        //渠道商账号的汇总查询页面
+        public IActionResult BusinessList()
+        {
+            return View();
+        }
+
         //修改密码页面
         public IActionResult Password()
         {
