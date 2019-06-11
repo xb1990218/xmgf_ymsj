@@ -93,9 +93,9 @@ namespace WebApp.Controllers
                 cache.Set<User>($"userid_{u.Id}", u, DateTimeOffset.Now.AddHours(1));
             }
             //获取该渠道商下面的客户用户(约定一个客户账号只有一个渠道商账号 一对一关系)
-            User nUser = userSice.GetEntity(a => a.ParentId == u.Id);
+            //User nUser = userSice.GetEntity(a => a.ParentId == u.Id);
             //对该nUser账号对应的UserInfo表信息按照后缀分组得总数 再分页
-            List<BusineShow> list= comSice.GetBusInfoShow(page, limit, nUser,bedate, out int totalCount);
+            List<BusineShow> list= comSice.GetBusInfoShow(page, limit, u,bedate, out int totalCount);
             return Json(new { code = 0, msg = "", count = totalCount, data = list });
         }
 

@@ -17,6 +17,7 @@ namespace Entities.Models
         public string Account { get; set; }
         public string System { get; set; }
         public string Ip { get; set; }
+        public string BusAccount { get; set; }
 
     }
 }
