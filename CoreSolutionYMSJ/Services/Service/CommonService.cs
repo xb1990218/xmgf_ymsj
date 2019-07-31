@@ -176,7 +176,6 @@ namespace Services.Service
         //获取渠道商分页信息
         public List<BusineShow> GetBusInfoShow(int page, int limit, User u,string bedate, out int totalCount)
         {
-            //Expression<Func<UserInfo, bool>> wherelambda = a => a.Account == u.UserName;
             Expression<Func<UserInfo, bool>> wherelambda = a => a.BusAccount == u.UserName;
             if (!string.IsNullOrWhiteSpace(bedate))
             {
